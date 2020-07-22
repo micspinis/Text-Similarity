@@ -7,7 +7,7 @@ import spacy
 app = Flask(__name__)
 api = Api(app)
 
-client = MongoClient("mongodb;//db:27017")
+client = MongoClient("mongodb://db:27017")
 db     = client.SimilarityDB
 users  = db["Users"]
 
@@ -33,8 +33,7 @@ class Register(Resource):
             }
             return jsonify(retJson)
 
-        hashed_pw = bcrypt.hashpw(password.enconde("utf8"), bcrypt.gensalt())
-
+        hashed_pw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
 
         users.insert({
             "Username": username,
@@ -57,14 +56,14 @@ def verifyPw(username, password):
         "Username": username
     })[0]["Password"]
     
-    if bcrypt-hashpw(password.enconde("utf8"), hashed_pw) == hashed_pw:
+    if bcrypt.hashpw(password.encode("utf8"), hashed_pw) == hashed_pw:
         return True
     else:
         return False
     
 
 def countTokens(username):
-   tokens = user.find({
+   tokens = users.find({
        "Username": username
        })[0]["Tokens"]
    return tokens
@@ -124,7 +123,7 @@ class Detect(Resource):
 
         current_tokens = countTokens(username)
 
-        user.update({
+        users.update({
             "Username": username,
         }, {
             "$set":{
